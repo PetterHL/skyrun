@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Upload, Download, Trash2, FileDown, Search, Settings, CheckCircle2, Loader2, RefreshCw } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Textarea } from "./components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/ui/tabs";
+import { Checkbox } from "./components/ui/checkbox";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 /**
@@ -589,7 +589,7 @@ export default function TrainingLogApp() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4" />
-                  <Input placeholder="Søk i dato, type, fokus, notater" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                  <Input placeholder="Søk i dato, type, fokus, notater" value={filterText} onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setFilterText(e.target.value)} />
                 </div>
               </CardHeader>
               <CardContent>
@@ -632,8 +632,8 @@ export default function TrainingLogApp() {
                                             <div className="flex items-center justify-between gap-2">
                                               <div className="text-xs text-neutral-600">{fmtDateNo(e.date)}</div>
                                               <div className="flex items-center gap-2 text-xs">
-                                                <label className="flex items-center gap-1"><Checkbox checked={e.active!==false} onCheckedChange={(v)=> updateEntry(e.id, { active: Boolean(v) })} /> Aktiv</label>
-                                                <label className="flex items-center gap-1"><Checkbox checked={!!e.completed} onCheckedChange={(v) => updateEntry(e.id, { completed: Boolean(v) })} /> Gj.ført</label>
+                                                <label className="flex items-center gap-1"><Checkbox checked={e.active!==false} onCheckedChange={(v: any)=> updateEntry(e.id, { active: Boolean(v) })} /> Aktiv</label>
+                                                <label className="flex items-center gap-1"><Checkbox checked={!!e.completed} onCheckedChange={(v: any) => updateEntry(e.id, { completed: Boolean(v) })} /> Gj.ført</label>
                                               </div>
                                             </div>
                                             <div className="mt-1 font-medium text-sm">{e.plannedType} {e.plannedMinutes ? `· ${e.plannedMinutes} min` : ''}</div>
@@ -641,11 +641,11 @@ export default function TrainingLogApp() {
                                             {!inactive && (
                                               <>
                                                 <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
-                                                  <Input placeholder="min" type="number" inputMode="numeric" value={e.actualMinutes ?? ""} onChange={(ev) => updateEntry(e.id, { actualMinutes: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
-                                                  <Input placeholder="km" type="number" inputMode="decimal" step="0.1" value={e.actualKm ?? ""} onChange={(ev) => updateEntry(e.id, { actualKm: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
-                                                  <Input placeholder="RPE" type="number" inputMode="numeric" min={1} max={10} value={e.rpe ?? ""} onChange={(ev) => updateEntry(e.id, { rpe: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
+                                                  <Input placeholder="min" type="number" inputMode="numeric" value={e.actualMinutes ?? ""} onChange={(ev: { target: { value: string; }; }) => updateEntry(e.id, { actualMinutes: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
+                                                  <Input placeholder="km" type="number" inputMode="decimal" step="0.1" value={e.actualKm ?? ""} onChange={(ev: { target: { value: string; }; }) => updateEntry(e.id, { actualKm: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
+                                                  <Input placeholder="RPE" type="number" inputMode="numeric" min={1} max={10} value={e.rpe ?? ""} onChange={(ev: { target: { value: string; }; }) => updateEntry(e.id, { rpe: ev.target.value === "" ? undefined : Number(ev.target.value) })} />
                                                 </div>
-                                                <Textarea className="mt-2 min-h-[36px]" placeholder="Notat" value={e.notes ?? ""} onChange={(ev) => updateEntry(e.id, { notes: ev.target.value })} />
+                                                <Textarea className="mt-2 min-h-[36px]" placeholder="Notat" value={e.notes ?? ""} onChange={(ev: { target: { value: any; }; }) => updateEntry(e.id, { notes: ev.target.value })} />
                                               </>
                                             )}
                                           </div>
@@ -760,14 +760,14 @@ export default function TrainingLogApp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>GitHub Token</Label>
-                    <Input type="password" placeholder="ghp_..." value={syncSettings.token} onChange={(e) => { const next = { ...syncSettings, token: e.target.value }; setSyncSettings(next); saveSyncSettings(next); }} />
+                    <Input type="password" placeholder="ghp_..." value={syncSettings.token} onChange={(e: { target: { value: any; }; }) => { const next = { ...syncSettings, token: e.target.value }; setSyncSettings(next); saveSyncSettings(next); }} />
                     <p className="text-xs text-neutral-600">Opprett under Developer settings → Personal access tokens (classic), med minst «gist» scope.</p>
                   </div>
                   <div className="space-y-2">
                     <Label>Gist ID (valgfri)</Label>
-                    <Input placeholder="f.eks. a1b2c3d4... (tomt = opprett ny)" value={syncSettings.gistId || ""} onChange={(e) => { const next = { ...syncSettings, gistId: e.target.value || undefined }; setSyncSettings(next); saveSyncSettings(next); }} />
+                    <Input placeholder="f.eks. a1b2c3d4... (tomt = opprett ny)" value={syncSettings.gistId || ""} onChange={(e: { target: { value: any; }; }) => { const next = { ...syncSettings, gistId: e.target.value || undefined }; setSyncSettings(next); saveSyncSettings(next); }} />
                     <Label>Filnavn</Label>
-                    <Input value={syncSettings.filename || "treningsplan.json"} onChange={(e) => { const next = { ...syncSettings, filename: e.target.value || "treningsplan.json" }; setSyncSettings(next); saveSyncSettings(next); }} />
+                    <Input value={syncSettings.filename || "treningsplan.json"} onChange={(e: { target: { value: any; }; }) => { const next = { ...syncSettings, filename: e.target.value || "treningsplan.json" }; setSyncSettings(next); saveSyncSettings(next); }} />
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -841,11 +841,11 @@ function PlanEditor({ entries, setEntries }: { entries: Entry[]; setEntries: Rea
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             <Label>Startdato for endring</Label>
-            <Input type="date" value={startISO} onChange={(e)=> setStartISO(e.target.value)} />
+            <Input type="date" value={startISO} onChange={(e: { target: { value: React.SetStateAction<string>; }; })=> setStartISO(e.target.value)} />
           </div>
           <div>
             <Label>Maks økter per uke</Label>
-            <Input type="number" min={1} max={7} value={weeklyCap} onChange={(e)=> setWeeklyCap(Number(e.target.value || 5))} />
+            <Input type="number" min={1} max={7} value={weeklyCap} onChange={(e: { target: { value: any; }; })=> setWeeklyCap(Number(e.target.value || 5))} />
           </div>
           <div className="flex items-end">
             <Button onClick={applyCap}>Juster plan</Button>
