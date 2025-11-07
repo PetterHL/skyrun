@@ -368,8 +368,6 @@ function loadLocal(): PersistedDoc | undefined { const raw = localStorage.getIte
 function saveLocal(doc: PersistedDoc) { localStorage.setItem(LS_KEY, JSON.stringify(doc)); }
 
 function loadSettings(): AppSettings { const raw = localStorage.getItem(LS_SETTINGS_KEY); if (!raw) return { goalType: "minutes", goalValue: 180, autoPull: true, pullIntervalSec: 60 }; try { return JSON.parse(raw) as AppSettings; } catch { return { goalType: "minutes", goalValue: 180, autoPull: true, pullIntervalSec: 60 }; } }
-function saveSettings(s: AppSettings) { localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(s)); }
-
 // ---------------- Sync: GitHub Gist only ----------------
 
 type SyncKind = "GitHubGist";
@@ -530,12 +528,6 @@ export default function TrainingLogApp() {
     return Object.values(map).sort((a, b) => a.week.localeCompare(b.week));
   }, [entries]);
 
-  const filtered = useMemo(() => {
-    const list = entries.slice().sort((a, b) => a.date.localeCompare(b.date));
-    if (!filterText.trim()) return list;
-    const q = filterText.toLowerCase();
-    return list.filter((e) => [e.date, e.plannedType, e.focus, e.notes, e.instructions].filter(Boolean).some((v) => String(v).toLowerCase().includes(q)));
-  }, [entries, filterText]);
 
   function updateEntry(id: string, patch: Partial<Entry>) { setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch, updatedAt: nowMs() } : e))); }
   function clearAll() { if (confirm("Slette alle data lokalt? (Ingen regenerering)")) setEntries([]); }
@@ -679,7 +671,7 @@ export default function TrainingLogApp() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {weekGroupsRaw.map(({ wk, items, first, last, isPast, isCurrent, allDone }) => {
+                  {weekGroupsRaw.map(({ wk, items, first, last, isPast, isCurrent }) => {
                     const plannedActive = items.filter(i=>i.active!==false).length;
                     const doneActive = items.filter(i=>i.completed && i.active!==false).length;
                     const allDoneOrInactive = items.every(i=>i.completed || i.active===false);
@@ -803,7 +795,7 @@ export default function TrainingLogApp() {
 })();
 
 // ---------------- Plan Editor ----------------
-function PlanEditor({ entries, setEntries }: { entries: Entry[]; setEntries: React.Dispatch<React.SetStateAction<Entry[]>> }) {
+function PlanEditor({ setEntries }: { entries: Entry[]; setEntries: React.Dispatch<React.SetStateAction<Entry[]>> }) {
   const [weeklyCap, setWeeklyCap] = useState<number>(5); // default: behold 5 pr uke
   const [startISO, setStartISO] = useState<string>(() => todayISO());
   const priority: PlannedType[] = ["Langtur", "Intervall", "Moderat", "Lett", "Styrke"]; // behold i denne rekkefølgen
